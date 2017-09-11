@@ -22,7 +22,7 @@ function varargout = polarizationAnalysisGui(varargin)
 
 % Edit the above text to modify the response to help polarizationAnalysisGui
 
-% Last Modified by GUIDE v2.5 04-Jul-2016 11:57:23
+% Last Modified by GUIDE v2.5 28-Jun-2017 16:35:29
 
 % Begin initialization code - DO NOT EDIT
 
@@ -787,3 +787,21 @@ function selectSubsectionModule_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 selectSubsectionModule(hObject, eventdata, handles);
+
+
+% --- Executes on button press in checkbox1.
+function checkbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hint: get(hObject,'Value') returns toggle state of checkbox1
+if (get(hObject,'Value') == get(hObject,'Max'))
+	handles.AutoContrast = 1;
+    guidata(hObject,handles)
+%     disp('Autocontrast On')
+else
+	handles.AutoContrast = 0;
+    guidata(hObject,handles)
+%     disp('Autocontrast Off')
+end
+

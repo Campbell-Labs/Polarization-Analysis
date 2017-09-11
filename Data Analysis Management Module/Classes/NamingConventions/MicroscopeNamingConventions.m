@@ -13,8 +13,8 @@ classdef MicroscopeNamingConventions
         
         
         % image series
-        FLUORO_COLOUR = NamingConvention({'colour'}, {'RGB'});
-        FLUORO_GREYSCALE = NamingConvention({'mono'}, {'BW'});
+        FLUORO_COLOUR = NamingConvention({'colour', 'Colour'}, {'RGB'});
+        FLUORO_GREYSCALE = NamingConvention({'mono', 'Mono'}, {'BW'});
         
         MM_IMAGES_PSA = {NamingConvention({'45'}, {'45'}), NamingConvention({'00'}, {'00'}), NamingConvention({'30'}, {'30'}), NamingConvention({'60'}, {'60'})};
         MM_IMAGES_PSG = {NamingConvention({'45'}, {'45'}), NamingConvention({'00'}, {'00'}), NamingConvention({'30'}, {'30'}), NamingConvention({'60'}, {'60'})};
