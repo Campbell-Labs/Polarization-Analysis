@@ -10,6 +10,7 @@ handles.networkProject = []; %stores project metadata
 handles.localProject = [];
 
 handles.image = [];
+handles.AutoContrast = 0;           %%%%%%%%%% ERIK EDIT %%%%%%%%%%
 
 % initialize GUI elements
 
