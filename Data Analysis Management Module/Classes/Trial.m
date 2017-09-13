@@ -233,7 +233,7 @@ classdef Trial
             if trial.subjectType.subjectClassType == SubjectClassTypes.Natural
                 subject = NaturalSubject(nextSubjectNumber, existingSubjectNumbers, toTrialPath, localPath, importDir, userName, trial.getFilename());
             elseif trial.subjectType.subjectClassType == SubjectClassTypes.Artifical
-                subject = ArtificalSubject(nextSubjectNumber, existingSubjectNumbers, toTrialPath, localPath, importDir, userName, trial.getFilename());
+                subject = ArtificialSubject(nextSubjectNumber, existingSubjectNumbers, toTrialPath, localPath, importDir, userName, trial.getFilename());
             else
                 error('Unknown Subject Type');
             end

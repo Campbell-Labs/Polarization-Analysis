@@ -1,5 +1,4 @@
-classdef ArtificalSubject < Subject
-    % ArtificalSubject
+classdef ArtificialSubject < Subject
     % these are "subjects" that are grown from pure amyloid
     
     properties        
