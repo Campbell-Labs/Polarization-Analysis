@@ -353,7 +353,7 @@ function incubationTempInput_Callback(hObject, eventdata, handles)
 if isnan(str2double(get(hObject, 'String')))
     
     set(handles.incubationTempInput, 'String', '');
-    handles.incubationTime = [];
+    handles.incubationTemperature = [];
     
     warndlg('Subject number must be numerical.', 'Subject Number Error', 'modal'); 
     
