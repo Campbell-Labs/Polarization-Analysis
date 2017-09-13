@@ -109,7 +109,7 @@ set(handles.subjectNumberInput, 'String', num2str(handles.subjectNumber));
 set(handles.prepByInput, 'String', handles.preppedBy);
 set(handles.incubationTimeInput, 'String', num2str(handles.incubationTime));
 set(handles.incubationTempInput, 'String', num2str(handles.incubationTemperature));
-set(handles.subjectNotesInput, 'String', handles.subjectNotes);
+set(handles.subjectNotesInput, 'String', handles.notes);
 
 justDate = false;
 
@@ -446,7 +446,7 @@ function OK_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 guidata(hObject, handles);
-uiresume(handles.NaturalSubjectMetadataEntry);
+uiresume(handles.ArtificialSubjectMetadataEntry);
 
 end
 
@@ -463,7 +463,7 @@ serialDate = guiDatePicker(now, justDate);
 
 handles.preppedDate = serialDate;
 
-setDateInput(handles.timeOfDeathInput, serialDate, justDate);
+setDateInput(handles.prepDateInput, serialDate, justDate);
 
 checkToEnableOkButton(handles);
 

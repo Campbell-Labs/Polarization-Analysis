@@ -313,9 +313,9 @@ classdef ArtificialSubject < Subject
             [subjectIdString, subjectNumberString, subjectNotesString] = subject.getSubjectMetadataString();
             
             preppedDateString = ['Preparation Date: ', displayDateAndTime(subject.preppedDate)];
-            preppedByString = ['Prepared By: ', formatMultiLineTextForDisplay(subject.preppedBy)];
-            incubationTimeString = ['Incubation Time: ', formatMultiLineTextForDisplay(subject.incubationTime)];
-            incubationTemperatureString = ['Incubation Temperature: ', formatMultiLineTextForDisplay(subject.incubationTemperature)];
+            preppedByString = ['Prepared By: ', subject.preppedBy];
+            incubationTimeString = ['Incubation Time: ', num2str(subject.incubationTime)];
+            incubationTemperatureString = ['Incubation Temperature: ', num2str(subject.incubationTemperature)];
             metadataHistoryStrings = generateMetadataHistoryStrings(subject.metadataHistory);
             
             metadataString = [subjectIdString, subjectNumberString, preppedDateString, preppedByString, incubationTimeString, incubationTemperatureString, subjectNotesString];

@@ -7,7 +7,7 @@ classdef SubjectClassTypes
     
     enumeration
         Natural     ('Natural')
-        Artifical   ('Artifical')
+        Artificial   ('Artificial')
     end
     
     methods
