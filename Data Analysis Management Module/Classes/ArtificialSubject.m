@@ -17,7 +17,7 @@ classdef ArtificialSubject < Subject
                 
                 if ~cancel
                     % set metadata history
-                    subject.metadataHistory = MetadataHistoryEntry(userName, NaturalSubject.empty);
+                    subject.metadataHistory = MetadataHistoryEntry(userName, ArtificialSubject.empty);
                     
                     % set navigation listbox label
                     subject.naviListboxLabel = subject.generateListboxLabel();
@@ -247,7 +247,7 @@ classdef ArtificialSubject < Subject
             
             isEdit = false;
             
-            %Call to NaturalSubjectMetadataEntry GUI
+            %Call to ArtificialSubjectMetadataEntry GUI
             [cancel, subjectNumber, subjectId, preppedDate, preppedBy, incubationTime, incubationTemperature, notes] = ArtificialSubjectMetadataEntry(subjectNumber, existingSubjectNumbers, userName, importPath, isEdit);
             
             if ~cancel
