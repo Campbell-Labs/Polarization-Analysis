@@ -232,8 +232,8 @@ classdef Trial
         function subject = createSubject(trial, nextSubjectNumber, existingSubjectNumbers, toTrialPath, localPath, importDir, userName)
             if trial.subjectType.subjectClassType == SubjectClassTypes.Natural
                 subject = NaturalSubject(nextSubjectNumber, existingSubjectNumbers, toTrialPath, localPath, importDir, userName, trial.getFilename());
-            elseif trial.subjectType.subjectClassType == SubjectClassTypes.Artifical
-                subject = ArtificalSubject();
+            elseif trial.subjectType.subjectClassType == SubjectClassTypes.Artificial
+                subject = ArtificialSubject(nextSubjectNumber, existingSubjectNumbers, toTrialPath, localPath, importDir, userName, trial.getFilename());
             else
                 error('Unknown Subject Type');
             end

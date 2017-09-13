@@ -10,7 +10,7 @@ classdef SubjectTypes
     enumeration
         Dog         ('Dog',             NaturalSubject.empty,     SubjectClassTypes.Natural)
         Human       ('Human',           NaturalSubject.empty,     SubjectClassTypes.Natural)
-        PureAmyloid ('Pure Amyloid',    ArtificalSubject.empty,   SubjectClassTypes.Artifical)
+        PureAmyloid ('Pure Amyloid',    ArtificialSubject.empty,   SubjectClassTypes.Artificial)
     end
     
     methods

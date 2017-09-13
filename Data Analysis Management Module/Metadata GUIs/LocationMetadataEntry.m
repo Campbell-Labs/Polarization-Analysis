@@ -102,6 +102,8 @@ if handles.subjectType == SubjectTypes.Dog
     handles.plotFovea = false;
 elseif handles.subjectType == SubjectTypes.Human
     handles.plotFovea = true;
+else
+    handles.plotFovea = false;
 end
 
 %Shading out the appropriate areas on the retina based on selected quarter
