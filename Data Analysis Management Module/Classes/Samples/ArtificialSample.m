@@ -1,4 +1,6 @@
 classdef ArtificialSample < Sample
+    % ArtificialSample
+    % metadata for a sample coming from an ArtificialSubject
     
     properties 
         sampleId
