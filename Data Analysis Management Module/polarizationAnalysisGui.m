@@ -22,7 +22,7 @@ function varargout = polarizationAnalysisGui(varargin)
 
 % Edit the above text to modify the response to help polarizationAnalysisGui
 
-% Last Modified by GUIDE v2.5 28-Jun-2017 16:35:29
+% Last Modified by GUIDE v2.5 14-Sep-2017 13:12:44
 
 % Begin initialization code - DO NOT EDIT
 
@@ -638,7 +638,12 @@ function newCsfSample_Callback(hObject, eventdata, handles)
 
 newCsfSample(hObject, eventdata, handles);
 
-
+% --------------------------------------------------------------------
+function newArtificialSample_Callback(hObject, eventdata, handles)
+% hObject    handle to newArtificialSample (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newArtificialSample(hObject, eventdata, handles);
 % --------------------------------------------------------------------
 function newProject_Callback(hObject, eventdata, handles)
 % hObject    handle to newProject (see GCBO)
@@ -804,4 +809,7 @@ else
     guidata(hObject,handles)
 %     disp('Autocontrast Off')
 end
+
+
+
 

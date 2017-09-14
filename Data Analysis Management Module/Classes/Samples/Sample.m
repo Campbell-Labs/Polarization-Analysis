@@ -61,6 +61,8 @@ classdef Sample
                     importPath,...
                     userName,...
                     toFilename);
+            elseif sampleType == SampleTypes.ArtificialSample
+                sample = ArtificialSample();
                 
             else
                 error('Invalid Sample type!');
