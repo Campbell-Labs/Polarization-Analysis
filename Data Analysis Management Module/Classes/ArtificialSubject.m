@@ -3,11 +3,7 @@ classdef ArtificialSubject < Subject
     % these are "subjects" that are grown from pure amyloid
     
     properties        
-        preppedDate
-        preppedBy
-        
-        incubationTime %hours (decimal please)
-        incubationTemperature %in degrees C (decimal please)        
+        subjectSource = '';      
     end
     
     methods
@@ -43,7 +39,7 @@ classdef ArtificialSubject < Subject
         function subject = editMetadata(subject, projectPath, toTrialPath, userName, dataFilename, existingSubjectNumbers)
             isEdit = true;
             
-            [cancel, subjectNumber, subjectId, preppedDate, preppedBy, incubationTime, incubationTemperature, notes] = ArtificialSubjectMetadataEntry([], existingSubjectNumbers, userName, '', isEdit, subject);
+            [cancel, subjectNumber, subjectId, subjectSource, notes] = ArtificialSubjectMetadataEntry([], existingSubjectNumbers, userName, '', isEdit, subject);
             
             if ~cancel
                 subject = updateMetadataHistory(subject, userName);
@@ -54,10 +50,7 @@ classdef ArtificialSubject < Subject
                 %Assigning values to ArtificialSubject Properties
                 subject.subjectNumber = subjectNumber;
                 subject.subjectId = subjectId;
-                subject.preppedDate = preppedDate;
-                subject.preppedBy = preppedBy;
-                subject.incubationTime = incubationTime;
-                subject.incubationTemperature = incubationTemperature;
+                subject.subjectSource = subjectSource;
                 subject.notes = notes;
                 
                 updateBackupFiles = updateBackupFilesQuestionGui();
@@ -248,16 +241,13 @@ classdef ArtificialSubject < Subject
             isEdit = false;
             
             %Call to ArtificialSubjectMetadataEntry GUI
-            [cancel, subjectNumber, subjectId, preppedDate, preppedBy, incubationTime, incubationTemperature, notes] = ArtificialSubjectMetadataEntry(subjectNumber, existingSubjectNumbers, userName, importPath, isEdit);
+            [cancel, subjectNumber, subjectId, subjectSource, notes] = ArtificialSubjectMetadataEntry(subjectNumber, existingSubjectNumbers, userName, importPath, isEdit);
             
             if ~cancel
                 %Assigning values to ArtificialSubject Properties
                 subject.subjectNumber = subjectNumber;
                 subject.subjectId = subjectId;
-                subject.preppedDate = preppedDate;
-                subject.preppedBy = preppedBy;
-                subject.incubationTime = incubationTime;
-                subject.incubationTemperature = incubationTemperature;
+                subject.subjectSource = subjectSource;
                 subject.notes = notes;
             end
             
@@ -312,13 +302,10 @@ classdef ArtificialSubject < Subject
             
             [subjectIdString, subjectNumberString, subjectNotesString] = subject.getSubjectMetadataString();
             
-            preppedDateString = ['Preparation Date: ', displayDateAndTime(subject.preppedDate)];
-            preppedByString = ['Prepared By: ', subject.preppedBy];
-            incubationTimeString = ['Incubation Time: ', num2str(subject.incubationTime)];
-            incubationTemperatureString = ['Incubation Temperature: ', num2str(subject.incubationTemperature)];
+            subjectSourceString = ['Subject Source: ', subject.subjectSource];
             metadataHistoryStrings = generateMetadataHistoryStrings(subject.metadataHistory);
             
-            metadataString = [subjectIdString, subjectNumberString, preppedDateString, preppedByString, incubationTimeString, incubationTemperatureString, subjectNotesString];
+            metadataString = [subjectIdString, subjectNumberString, subjectSourceString, subjectNotesString];
             metadataString = [metadataString, metadataHistoryStrings];
             
         end
@@ -502,7 +489,7 @@ classdef ArtificialSubject < Subject
             for i=1:length(diagnoses)
                 diagnosis = diagnoses{i};
                 
-                if diagnosis.isADPositive(trial);
+                if diagnosis.isADPositive(trial)
                     bool = true;
                     break;
                 end

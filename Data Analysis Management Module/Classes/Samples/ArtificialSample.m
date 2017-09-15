@@ -4,12 +4,12 @@ classdef ArtificialSample < Sample
     
     properties 
         sampleId
-        
-        stain
-        slideMaterial
-        
-        preppedDate
         preppedBy
+        preppedDate
+        
+        incubationTime %hours in decimal
+        incubationTemperature %degrees celcius in decimal
+        
     end
     
     methods

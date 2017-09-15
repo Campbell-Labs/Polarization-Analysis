@@ -22,7 +22,7 @@ function varargout = ArtificialSubjectMetadataEntry(varargin)
 
 % Edit the above text to modify the response to help ArtificialSubjectMetadataEntry
 
-% Last Modified by GUIDE v2.5 12-Sep-2017 14:02:04
+% Last Modified by GUIDE v2.5 15-Sep-2017 10:59:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,10 +83,7 @@ if isEdit
 
     handles.subjectNumber = subject.subjectNumber;
     handles.subjectId = subject.subjectId;    
-    handles.preppedDate = subject.preppedDate;
-    handles.preppedBy = subject.preppedBy;
-    handles.incubationTime = subject.incubationTime;
-    handles.incubationTemperature = subject.incubationTemperature;   
+    handles.subjectSource = subject.preppedDate;   
     handles.notes = subject.notes;
 else
     set(handles.importPathTitle, 'String', handles.importPath);
@@ -95,10 +92,7 @@ else
     
     handles.subjectNumber = handles.suggestedSubjectNumber;
     handles.subjectId = defaultSubject.subjectId;    
-    handles.preppedDate = defaultSubject.preppedDate;
-    handles.preppedBy = defaultSubject.preppedBy;
-    handles.incubationTime = defaultSubject.incubationTime;
-    handles.incubationTemperature = defaultSubject.incubationTemperature;   
+    handles.subjectSource = defaultSubject.preppedDate;   
     handles.notes = defaultSubject.notes;
 end
 
@@ -106,14 +100,12 @@ end
 
 set(handles.subjectNameInput, 'String', handles.subjectId);
 set(handles.subjectNumberInput, 'String', num2str(handles.subjectNumber));
-set(handles.prepByInput, 'String', handles.preppedBy);
-set(handles.incubationTimeInput, 'String', num2str(handles.incubationTime));
-set(handles.incubationTempInput, 'String', num2str(handles.incubationTemperature));
+set(handles.subjectSourceInput, 'String', handles.subjectSource);
 set(handles.subjectNotesInput, 'String', handles.notes);
 
 justDate = false;
 
-setDateInput(handles.prepDateInput, handles.preppedDate, justDate);
+setDateInput(handles.subjectSourceInput, handles.preppedDate, justDate);
 
 % Choose default command line output for ArtificialSubjectMetadataEntry
 handles.output = hObject;
@@ -142,11 +134,8 @@ function varargout = ArtificialSubjectMetadataEntry_OutputFcn(hObject, eventdata
 varargout{1} = handles.cancel;
 varargout{2} = handles.subjectNumber;
 varargout{3} = handles.subjectId;
-varargout{4} = handles.preppedDate;
-varargout{5} = handles.preppedBy;
-varargout{6} = handles.incubationTime;
-varargout{7} = handles.incubationTemperature;
-varargout{8} = handles.notes;
+varargout{4} = handles.subjectSource;
+varargout{5} = handles.notes;
 
 close(handles.ArtificialSubjectMetadataEntry);
 end
@@ -250,38 +239,15 @@ end
 
 
 
-function prepDateInput_Callback(hObject, eventdata, handles)
-% hObject    handle to prepDateInput (see GCBO)
+function subjectSourceInput_Callback(hObject, eventdata, handles)
+% hObject    handle to subjectSourceInput (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of prepDateInput as text
-%        str2double(get(hObject,'String')) returns contents of prepDateInput as a double
-end
+% Hints: get(hObject,'String') returns contents of subjectSourceInput as text
+%        str2double(get(hObject,'String')) returns contents of subjectSourceInput as a double
 
-% --- Executes during object creation, after setting all properties.
-function prepDateInput_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to prepDateInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-end
-
-
-function prepByInput_Callback(hObject, eventdata, handles)
-% hObject    handle to prepByInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of prepByInput as text
-%        str2double(get(hObject,'String')) returns contents of prepByInput as a double
-
-handles.preppedBy = get(hObject, 'String');
+handles.subjectSource = get(hObject, 'String');
 
 checkToEnableOkButton(handles);
 
@@ -290,8 +256,8 @@ guidata(hObject, handles);
 end
 
 % --- Executes during object creation, after setting all properties.
-function prepByInput_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to prepByInput (see GCBO)
+function subjectSourceInput_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to subjectSourceInput (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -302,83 +268,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 end
 
-
-function incubationTimeInput_Callback(hObject, eventdata, handles)
-% hObject    handle to incubationTimeInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of incubationTimeInput as text
-%        str2double(get(hObject,'String')) returns contents of incubationTimeInput as a double
-
-if isnan(str2double(get(hObject, 'String')))
-    
-    set(handles.incubationTimeInput, 'String', '');
-    handles.incubationTime = [];
-    
-    warndlg('Subject number must be numerical.', 'Subject Number Error', 'modal'); 
-    
-else
-    handles.incubationTime = str2double(get(hObject, 'String'));
-end
-
-checkToEnableOkButton(handles);
-
-guidata(hObject, handles);
-
-end
-
-% --- Executes during object creation, after setting all properties.
-function incubationTimeInput_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to incubationTimeInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-end
-
-
-function incubationTempInput_Callback(hObject, eventdata, handles)
-% hObject    handle to incubationTempInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of incubationTempInput as text
-%        str2double(get(hObject,'String')) returns contents of incubationTempInput as a double
-
-if isnan(str2double(get(hObject, 'String')))
-    
-    set(handles.incubationTempInput, 'String', '');
-    handles.incubationTemperature = [];
-    
-    warndlg('Subject number must be numerical.', 'Subject Number Error', 'modal'); 
-    
-else
-    handles.incubationTemperature = str2double(get(hObject, 'String'));
-end
-
-checkToEnableOkButton(handles);
-
-guidata(hObject, handles);
-
-end
-
-% --- Executes during object creation, after setting all properties.
-function incubationTempInput_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to incubationTempInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-end
 
 
 function subjectNotesInput_Callback(hObject, eventdata, handles)
@@ -426,10 +315,7 @@ switch exit
         %Clears variables in the case that they wish to exit the program
         handles.subjectNumber = [];
         handles.subjectId = '';    
-        handles.preppedDate = [];
-        handles.preppedBy = '';
-        handles.incubationTime = [];
-        handles.incubationTemperature = [];   
+        handles.subjectSource = [];
         handles.notes = '';
         handles.cancel = true;
         guidata(hObject, handles);
@@ -451,25 +337,25 @@ uiresume(handles.ArtificialSubjectMetadataEntry);
 end
 
 
-% --- Executes on button press in prepDateButton.
-function prepDateButton_Callback(hObject, eventdata, handles)
-% hObject    handle to prepDateButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-justDate = false;
-
-serialDate = guiDatePicker(now, justDate);
-
-handles.preppedDate = serialDate;
-
-setDateInput(handles.prepDateInput, serialDate, justDate);
-
-checkToEnableOkButton(handles);
-
-guidata(hObject, handles);
-
-end
+% % --- Executes on button press in prepDateButton.
+% function prepDateButton_Callback(hObject, eventdata, handles)
+% % hObject    handle to prepDateButton (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% justDate = false;
+% 
+% serialDate = guiDatePicker(now, justDate);
+% 
+% handles.preppedDate = serialDate;
+% 
+% setDateInput(handles.subjectSourceInput, serialDate, justDate);
+% 
+% checkToEnableOkButton(handles);
+% 
+% guidata(hObject, handles);
+% 
+% end
 
 
 % --- Executes when user attempts to close ArtificialSubjectMetadataEntry.
@@ -481,10 +367,7 @@ function ArtificialSubjectMetadataEntry_CloseRequestFcn(hObject, eventdata, hand
 if isequal(get(hObject, 'waitstatus'), 'waiting')
      handles.subjectNumber = [];
      handles.subjectId = '';    
-     handles.preppedDate = [];
-     handles.preppedBy = '';
-     handles.incubationTime = [];
-     handles.incubationTemperature = [];   
+     handles.subjectSource = []; 
      handles.notes = '';
      handles.cancel = true;
      guidata(hObject, handles);
@@ -492,10 +375,7 @@ if isequal(get(hObject, 'waitstatus'), 'waiting')
 else
      handles.subjectNumber = [];
      handles.subjectId = '';    
-     handles.preppedDate = [];
-     handles.preppedBy = '';
-     handles.incubationTime = [];
-     handles.incubationTemperature = [];   
+     handles.subjectSource = [];  
      handles.notes = '';
      handles.cancel = true;
      guidata(hObject, handles);
@@ -510,7 +390,7 @@ function checkToEnableOkButton(handles)
 %This function will check to see if any of the input variables are empty,
 %and if not it will enable the OK button
 
-if ~isempty(handles.subjectNumber) && ~isempty(handles.subjectId) && ~isempty(handles.preppedDate) && ~isempty(handles.preppedBy) && ~isempty(handles.incubationTime) && ~isempty(handles.incubationTemperature)
+if ~isempty(handles.subjectNumber) && ~isempty(handles.subjectId) && ~isempty(handles.subjectSource) 
     set(handles.OK, 'enable', 'on');
 else
     set(handles.OK, 'enable', 'off');
