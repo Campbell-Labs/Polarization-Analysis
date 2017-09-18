@@ -158,28 +158,28 @@ classdef ArtificialSample < Sample
             end
         end
         
-        function sample = importSample(sample, toSampleProjectPath, sampleImportPath, projectPath, dataFilename, userName, subjectType)  
-            dirList = getAllFolders(sampleImportPath);
+        function sample = importSample(sample, toEyeProjectPath, eyeImportPath, projectPath, dataFilename, userName, subjectType)  
+            dirList = getAllFolders(eyeImportPath);
             
-            filenameSection = sample.generateFilenameSection();
+            filenameSection = eye.generateFilenameSection();
             dataFilename = [dataFilename, filenameSection];
             
             for i=1:length(dirList)
                 folderName = dirList{i};
                 
-                slideImportPath = makePath(sampleImportPath, folderName);
+                quarterImportPath = makePath(eyeImportPath, folderName);
                 
-                prompt = ['Select the slide to which the data being imported from ', slideImportPath, ' belongs to.'];
-                title = 'Select Slide';
-                choices = sample.getSlideChoices();
+                prompt = ['Select the quarter to which the data being imported from ', quarterImportPath, ' belongs to.'];
+                title = 'Select Quarter';
+                choices = eye.getQuarterChoices();
                 
                 [choice, cancel, createNew] = selectEntryOrCreateNew(prompt, title, choices);
                 
                 if ~cancel
                     if createNew
-                        suggestedSlideNumber = sample.nextSlideNumber();
-                        toFilename = sample.getFilename();
-                        slide = Quarter(suggestedQuarterNumber, eye.getQuarterNumbers(), toEyeProjectPath, projectPath, quarterImportPath, userName, toFilename);
+                        suggestedQuarterNumber = eye.nextQuarterNumber();
+                        toFilename = eye.getFilename();
+                        quarter = Quarter(suggestedQuarterNumber, eye.getQuarterNumbers(), toEyeProjectPath, projectPath, quarterImportPath, userName, toFilename);
                     else
                         quarter = eye.getQuarterFromChoice(choice);
                     end
