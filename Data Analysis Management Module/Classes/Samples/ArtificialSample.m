@@ -179,21 +179,98 @@ classdef ArtificialSample < Sample
                     if createNew
                         suggestedSlideNumber = sample.nextSlideNumber();
                         toFilename = sample.getFilename();
-                        slide = Quarter(suggestedQuarterNumber, eye.getQuarterNumbers(), toEyeProjectPath, projectPath, quarterImportPath, userName, toFilename);
+                        slide = Sample(suggestedSlideNumber, eye.getQuarterNumbers(), toEyeProjectPath, projectPath, quarterImportPath, userName, toFilename);
                     else
-                        quarter = eye.getQuarterFromChoice(choice);
+                        slide = sample.getSlideFromChoice(choice);
                     end
                     
-                    if ~isempty(quarter)
-                        quarterProjectPath = makePath(toEyeProjectPath, quarter.dirName);
+                    if ~isempty(slide)
+                        slideProjectPath = makePath(toSampleProjectPath, slide.dirName);
                         
-                        quarter = quarter.importQuarter(quarterProjectPath, quarterImportPath, projectPath, dataFilename, userName, subjectType, eye.eyeType);
+                        slide = slide.importSlide(slideProjectPath, slideImportPath, projectPath, dataFilename, userName, subjectType);
                         
-                        eye = eye.updateQuarter(quarter);
+                        sample = sample.updateSlide(slide);
                     end
                 end
             end
         end
+        
+        function slide = getSlideFromChoice(sample, choice)
+            slide = sample.slides{choice};
+        end
+        
+        function slideChoices = getSlideChoices(sample)
+            slides = sample.slides;
+            numSlides = length(slides);
+            
+            slideChoices = cell(numSlides, 1);
+            
+            for i=1:numSlides
+                slideChoices{i} = slides{i}.naviListboxLabel;
+            end
+        end
+        
+        function sample = updateSlide(sample, slide)
+            slides = sample.slides;
+            numSlides = length(slides);
+            updated = false;
+            
+            for i=1:numSlides
+                if slides{i}.slideNumber == slide.slideNumber
+                    sample.slides{i} = slide;
+                    updated = true;
+                    break;
+                end
+            end
+            
+            if ~updated
+                sample.slides{numSlides + 1} = slide;
+                
+                if sample.slideIndex == 0
+                    sample.slideIndex = 1;
+                end
+            end            
+        end
+        
+        function sample = updateSelectedQuarter(sample, slide)
+            sample.slides{sample.slideIndex} = slide;
+        end
+        
+        function sample = updateSelectedLocation(sample, location)
+            slide = sample.slides{sample.slideIndex};
+            
+            slide = slide.updateSelectedLocation(location);
+                        
+            sample.slides{sample.slideIndex} = slide;
+        end
+        
+        function slide = getSlideByNumber(sample, number)
+            slides = sample.slides;
+            
+            slide = Slide.empty;
+            
+            for i=1:length(slides)
+                if slides{i}.slideNumber == number
+                    slide = slides{i};
+                    break;
+                end
+            end
+        end
+        
+        function slideNumbers = getSlideNumbers(sample)
+            slides = sample.slides;
+            numSlides = length(slides);
+            
+            slideNumbers = zeros(numSlides, 1); % want this to be an matrix, not cell array
+                        
+            for i=1:numSlides
+                slideNumbers(i) = slides{i}.slideNumber;                
+            end
+        end
+        
+        
+        
+        
         
     end%%
     
