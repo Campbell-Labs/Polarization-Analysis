@@ -148,7 +148,7 @@ classdef ArtificialSample < Sample
             sample.slideIndex = objectIndex;   
         end
         
-        function sample = updateFileSelectionEntries(eye, toPath)
+        function sample = updateFileSelectionEntries(sample, toPath)
             slides = sample.slides;
             
             toPath = makePath(toPath, sample.dirName);
@@ -267,6 +267,181 @@ classdef ArtificialSample < Sample
                 slideNumbers(i) = slides{i}.slideNumber;                
             end
         end
+        
+        function nextNumber = nextSlideNumber(sample)
+            slideNumbers = sample.getSlideNumbers();
+            
+            if isempty(slideNumbers)
+                nextNumber = 1;
+            else
+                lastNumber = max(slideNumbers);
+                nextNumber = lastNumber + 1;
+            end
+        end
+        
+        function subSampleNumber = getSubSampleNumber(sample)
+            subSampleNumber = sample.sampleNumber;
+        end
+        
+        function sample = wipeoutMetadataFields(sample)
+            sample.dirName = '';
+            sample.slides = [];            
+            sample.toPath = '';
+            sample.toFilename = '';
+        end
+        
+        function slide = getSelectedSlide(sample)
+            slide = [];
+            
+            if sample.slideIndex ~= 0
+                slide = sample.slides{sample.slideIndex};
+            end
+        end
+        
+        function handles = updateNavigationListboxes(sample, handles)
+            numSlides = length(sample.slides);
+            
+            if numSlides == 0
+                disableNavigationListboxes(handles, handles.subSampleSelect);
+            else            
+                slideOptions = cell(numSlides, 1);
+                
+                for i=1:numSlides
+                    slideOptions{i} = sample.slides{i}.naviListboxLabel;
+                end
+                
+                set(handles.subSampleSelect, 'String', slideOptions, 'Value', sample.slideIndex, 'Enable', 'on');
+                
+                handles = sample.getSelectedSlide().updateNavigationListboxes(handles);
+            end
+        end
+        
+        function handles = updateMetadataFields(sample, handles, sampleMetadataString)
+            slide = sample.getSelectedSlide();
+                        
+            if isempty(slide)
+                metadataString = sampleMetadataString;
+                
+                disableMetadataFields(handles, handles.locationMetadata);
+            else
+                slideMetadataString = slide.getMetadataString();
+                
+                metadataString = [sampleMetadataString, {' '}, slideMetadataString];
+                
+                handles = slide.updateMetadataFields(handles);
+            end
+            
+            set(handles.sampleMetadata, 'String', metadataString);
+        end 
+        
+        function metadataString = getMetadataString(sample)
+            
+            [sampleNumberString, notesString] = sample.getSampleMetadataString();
+            
+            sampleIdString = ['Sample ID: ', sample.sampleId];
+            preppedByString = ['Prepared By: ', sample.preppedBy];
+            preppedDateString = ['Date Prepared: ', displayDateAndTime(sample.preppedDate)];
+            incubationTimeString = ['Incubation Time (hours): ', num2str(sample.incubationTime)];
+            incubationTemperatureString = ['Incubation Temperature (°C): ', num2str(sample.incubationTemperature)];
+        
+            metadataString = ...
+                ['Artificial Sample: ',...
+                sampleNumberString,...
+                sampleIdString,...
+                preppedByString,...
+                preppedDateString,...
+                incubationTimeString,...
+                incubationTemperatureString,...
+                notesString];
+            metadataString = [metadataString, metadataHistoryStrings];
+            
+        end
+        
+        function sample = updateSubSampleIndex(sample, index)
+            sample.slideIndex = index;
+        end
+        
+        function sample = updateLocationIndex(sample, index)
+            slide = sample.getSelectedSlide();
+            
+            slide = slide.updateLocationIndex(index);
+            
+            sample = sample.updateSlide(slide);
+        end
+        
+        function sample = updateSessionIndex(sample, index)
+            slide = sample.getSelectedSlide();
+            
+            slide = slide.updateSessionIndex(index);
+            
+            sample = sample.updateSlide(slide);
+        end
+        
+        function sample = updateSubfolderIndex(sample, index)
+            slide = sample.getSelectedSlide();
+            
+            slide = slide.updateSubfolderIndex(index);
+            
+            sample = sample.updateSlide(slide);
+        end
+        
+        function sample = updateFileIndex(sample, index)
+            slide = sample.getSelectedSlide();
+            
+            slide = slide.updateFileIndex(index);
+            
+            sample = sample.updateSlide(slide);
+        end
+        
+        function fileSelection = getSelectedFile(sample)
+            slide = sample.getSelectedSlide();
+            
+            if ~isempty(slide)
+                fileSelection = slide.getSelectedFile();
+            else
+                fileSelection = [];
+            end
+        end
+        
+        function sample = incrementFileIndex(sample, increment)            
+            slide = sample.getSelectedSlide();
+            
+            slide = slide.incrementFileIndex(increment);
+            
+            sample = sample.updateSlide(slide);
+        end
+        
+        function sample = importLegacyData(sample, toSampleProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType)
+            filenameSection = sample.generateFilenameSection();
+            dataFilename = [dataFilename, filenameSection];
+            
+            prompt = ['Select the slide to which the data being imported from ', displayImportPath, ' belongs to.'];
+            title = 'Select Slide';
+            choices = sample.getSlideChoices();
+            
+            [choice, cancel, createNew] = selectEntryOrCreateNew(prompt, title, choices);
+            
+            if ~cancel
+                if createNew
+                    suggestedSlideNumber = sample.nextSlideNumber();
+                    toFilename = sample.getFilename();
+                    slide = Slide(suggestedSlideNumber, sample.getSlideNumbers(), toSampleProjectPath, localProjectPath, displayImportPath, userName, toFilename);
+                else
+                    slide = sample.getSlideFromChoice(choice);
+                end
+                
+                if ~isempty(slide)
+                    toSlideProjectPath = makePath(toSampleProjectPath, slide.dirName);
+                    
+                    slide = slide.importLegacyData(toSlideProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType);
+                    
+                    eye = eye.updateQuarter(quarter);
+                end
+            end
+        end
+        
+        
+        
         
         
         
