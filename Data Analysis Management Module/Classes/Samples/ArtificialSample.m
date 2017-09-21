@@ -6,6 +6,7 @@ classdef ArtificialSample < Sample
         sampleId
         preppedBy
         preppedDate
+        sampleType = [];
         
         incubationTime %hours in decimal
         incubationTemperature %degrees celcius in decimal
@@ -77,7 +78,7 @@ classdef ArtificialSample < Sample
             end
          end
         
-         function sample = editMetadata(sample, projectPath, toSubjectPath, userName, dataFilename, existingSampleNumbers, existingCsfSampleNumbers)
+         function sample = editMetadata(sample, projectPath, toSubjectPath, userName, dataFilename, existingSampleNumbers)
             isEdit = true;
             importPath = '';
             
@@ -187,7 +188,7 @@ classdef ArtificialSample < Sample
                     if ~isempty(slide)
                         slideProjectPath = makePath(toSampleProjectPath, slide.dirName);
                         
-                        slide = slide.importSlide(slideProjectPath, slideImportPath, projectPath, dataFilename, userName, subjectType);
+                        slide = slide.importSlide(slideProjectPath, slideImportPath, projectPath, dataFilename, userName, subjectType, sample.sampleType);
                         
                         sample = sample.updateSlide(slide);
                     end
@@ -433,21 +434,295 @@ classdef ArtificialSample < Sample
                 if ~isempty(slide)
                     toSlideProjectPath = makePath(toSampleProjectPath, slide.dirName);
                     
-                    slide = slide.importLegacyData(toSlideProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType);
+                    slide = slide.importLegacyData(toSlideProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType, sample.sampleType);
                     
                     sample = sample.updateSlide(slide);
                 end
             end
         end
         
+        function sample = editSelectedSlideMetadata(sample, projectPath, toSamplePath, userName, dataFilename)
+            slide = sample.getSelectedSlide();
+            
+            if ~isempty(slide)
+                existingSlideNumbers = sample.getSlideNumbers();
+                filenameSection = sample.generateFilenameSection();
+                dataFilename = [dataFilename, filenameSection];
+                
+                slide = slide.editMetadata(projectPath, toSamplePath, userName, dataFilename, existingSlideNumbers);
+            
+                sample = sample.updateSelectedSlide(slide);
+            end
+        end
+        
+        function sample = editSelectedLocationMetadata(sample, projectPath, toSamplePath, userName, dataFilename, subjectType)
+            slide = sample.getSelectedSlide();
+            
+            if ~isempty(slide)
+                toSlidePath = makePath(toSamplePath, slide.dirName);
+                filenameSection = sample.generateFilenameSection();
+                dataFilename = [dataFilename, filenameSection];
+                
+                slide = slide.editSelectedLocationMetadata(projectPath, toSlidePath, userName, dataFilename, sample.sampleType, subjectType);
+            
+                sample = sample.updateSelectedSlide(slide);
+            end
+        end
+        
+        function sample = editSelectedSessionMetadata(sample, projectPath, toSamplePath, userName, dataFilename)
+            slide = sample.getSelectedSlide();
+            
+            if ~isempty(slide)
+                toSlidePath = makePath(toSamplePath, slide.dirName);
+                filenameSection = sample.generateFilenameSection();
+                dataFilename = [dataFilename, filenameSection];
+                
+                slide = slide.editSelectedSessionMetadata(projectPath, toSlidePath, userName, dataFilename);
+            
+                sample = sample.updateSelectedSlide(slide);
+            end
+        end
+        
+        function sample = createNewSlide(sample, projectPath, toPath, userName)
+            suggestedSlideNumber = sample.nextSlideNumber();
+            existingSlideNumbers = sample.getSlideNumbers();
+            
+            toSamplePath = makePath(toPath, sample.dirName);
+            importDir = '';
+            
+            slide = Slide(suggestedSlideNumber, existingSlideNumbers, toSamplePath, projectPath, importDir, userName, sample.getFilename());
+            
+            if ~isempty(slide)
+                sample = sample.updateSlide(slide);
+            end
+        end 
+        
+        function sample = createNewLocation(sample, projectPath, toPath, userName, subjectType)
+            slide = sample.getSelectedSlide();
+            
+            if ~isempty(slide)
+                toPath = makePath(toPath, sample.dirName);
+                
+                sampleType = sample.sampleType;
+                
+                slide = slide.createNewLocation(projectPath, toPath, userName, subjectType, sampleType);
+                
+                sample = sample.updateSlide(slide);
+            end
+        end
+        
+        function sample = createNewSession(sample, projectPath, toPath, userName, sessionType)
+            slide = sample.getSelectedSlide();
+            
+            if ~isempty(slide)
+                toPath = makePath(toPath, sample.dirName);
+                
+                slide = slide.createNewSession(projectPath, toPath, userName, sessionType);
+                
+                sample = sample.updateSlide(slide);
+            end
+        end
+        
+        function filenameSections = getFilenameSections(sample, indices)
+            if isempty(indices)
+                filenameSections = sample.generateFilenameSection();
+            else
+                index = indices(1);
+                
+                slide = sample.slides{index};
+                
+                if length(indices) == 1
+                    indices = [];
+                else
+                    indices = indices(2:length(indices));
+                end
+                
+                filenameSections = [sample.generateFilenameSection(), slide.getFilenameSections(indices)];
+            end
+        end
+        
+        function sample = applySelection(sample, indices, isSelected, additionalFields)
+            index = indices(1);
+            
+            len = length(indices);
+            
+            selectedObject = sample.slides{index};
+            
+            if len > 1
+                indices = indices(2:len);
+                
+                selectedObject = selectedObject.applySelection(indices, isSelected, additionalFields);
+            else
+                selectedObject.isSelected = isSelected;
+                selectedObject.selectStructureFields = additionalFields;
+            end           
+            
+            sample.slides{index} = selectedObject;
+        end
+        
+        % ************************************************
+        % FUNCTIONS FOR SENSITIVITY AND SPECIFICITY MODULE
+        % ************************************************
+        
+        function [dataSheetOutput, rowIndex, allLocationRowIndices] = placeSensitivityAndSpecificityData(sample, dataSheetOutput, rowIndex)
+            slides = sample.slides;
+            
+            allLocationRowIndices = [];
+            
+            for i=1:length(slides)
+                slide = slides{i};
+                
+                if ~isempty(slide.isSelected)
+                    % increase row index
+                    slideRowIndex = rowIndex;
+                    
+                    rowIndex = rowIndex + 1;
+                    
+                    % place location
+                    [dataSheetOutput, rowIndex, locationRowIndices] = slide.placeSensitivityAndSpecificityData(dataSheetOutput, rowIndex);
+                    
+                    allLocationRowIndices = [allLocationRowIndices, locationRowIndices];
+                    
+                    % write slide data
+                                        
+                    dataSheetOutput{quarterRowIndex,1} = slide.uuid;
+                    dataSheetOutput{quarterRowIndex,2} = slide.getFilename();
+                    
+                    if slide.isSelected
+                        % nothing to do
+                        dataSheetOutput{quarterRowIndex,3} = ' '; %blank 
+                    else
+                        reason = slide.selectStructureFields.exclusionReason;
+                        
+                        if isempty(reason)
+                            reason = SensitivityAndSpecificityConstants.NO_REASON_TAG;
+                        end
+                        
+                        dataSheetOutput{slideRowIndex, 3} = [SensitivityAndSpecificityConstants.NOT_RUN_TAG, reason];
+                    end
+                    
+                end
+            end
+        end
+        
+        % ******************************************
+        % FUNCTIONS FOR POLARIZATION ANALYSIS MODULE
+        % ******************************************
+        
+        function [hasValidSession, selectStructureForSample] = createSelectStructure(sample, indices, sessionClass)
+            slides = sample.slides;
+            
+            selectStructureForSample = {};
+            hasValidSession = false;
+            
+            for i=1:length(slides)
+                newIndices = [indices, i];
+                
+                [newHasValidLocation, selectStructureForSlide] = slides{i}.createSelectStructure(newIndices, sessionClass);
+                
+                if newHasValidLocation
+                    selectStructureForSample = [selectStructureForSample, selectStructureForSlide];
+                    
+                    hasValidSession = true;
+                end
+            end
+            
+            if hasValidSession
+                switch sessionClass
+                    case class(PolarizationAnalysisSession)
+                        selectionEntry = PolarizationAnalysisModuleSelectionEntry(sample.naviListboxLabel, indices);
+                    case class(SubsectionStatisticsAnalysisSession)
+                        selectionEntry = SubsectionStatisticsModuleSelectionEntry(sample.naviListboxLabel, indices);
+                    case class(SensitivityAndSpecificityAnalysisSession)
+                        selectionEntry = SensitivityAndSpecificityModuleSelectionEntry(sample.naviListboxLabel, indices, sample);
+                end
+                
+                selectStructureForSample = [{selectionEntry}, selectStructureForSample];
+            else
+                if strcmp(sessionClass, class(SensitivityAndSpecificityAnalysisSession)) % for sensitivity and specificity, even if no location, have unselected sample
+                    selectionEntry = SensitivityAndSpecificityModuleSelectionEntry(sample.naviListboxLabel, indices, sample);
+                    
+                    selectionEntry.isSelected = false;
+                    selectionEntry.exclusionReason = SensitivityAndSpecificityConstants.NO_DATA_REASON;
+                    
+                    selectStructureForSample = {selectionEntry};
+                else
+                    selectStructureForSample = {};
+                end
+            end
+            
+        end
+        
+        function [isValidated, toPath] = validateSession(sample, indices, toPath)
+            slide = sample.slides{indices(1)};
+            
+            newIndices = indices(2:length(indices));
+            toPath = makePath(toPath, sample.dirName);
+            
+            [isValidated, toPath] = slide.validateSession(newIndices, toPath);
+        end
+        
+        function [sample, selectStructure] = runPolarizationAnalysis(sample, indices, defaultSession, projectPath, progressDisplayHandle, selectStructure, selectStructureIndex, toPath, fileName)
+            slide = sample.slides{indices(1)};
+            
+            newIndices = indices(2:length(indices));
+            toPath = makePath(toPath, sample.dirName);
+            fileName = [fileName, sample.generateFilenameSection];
+            
+            [slide, selectStructure] = slide.runPolarizationAnalysis(newIndices, defaultSession, projectPath, progressDisplayHandle, selectStructure, selectStructureIndex, toPath, fileName);
+            
+            sample = sample.updateSlide(slide);
+        end
+        
+        function [location, toLocationPath, toLocationFilename] = getSelectedLocation(sample)
+            slide = sample.getSelectedSlide();
+            
+            if isempty(slide)            
+                location = [];
+            else
+                location = slide.getSelectedLocation();
+                
+                toLocationPath = makePath(slide.dirName, location.dirName);
+                toLocationFilename = [slide.generateFilenameSection, location.generateFilenameSection];
+            end
+        end
+        
+        function session = getSelectedSession(sample)
+            slide = sample.getSelectedSlide();
+            
+            if isempty(slide)            
+                session = [];
+            else
+                session = slide.getSelectedSession();
+            end
+        end
+        
+        % ******************************************
+        % FUNCTIONS FOR SUBSECTION STATISTICS MODULE
+        % ******************************************
+        
+        function [data, locationString, sessionString] = getPolarizationAnalysisData(sample, subsectionSession, toIndices, toPath, fileName)
+            slide = sample.slides{toIndices(1)};
+            
+            newIndices = toIndices(2:length(toIndices));
+            toPath = makePath(toPath, sample.dirName);
+            fileName = [fileName, sample.generateFilenameSection];
+            
+            [data, locationString, sessionString] = slide.getPolarizationAnalysisData(subsectionSession, newIndices, toPath, fileName);
+        end
+        
+        function mask = getFluoroMask(sample, subsectionSession, toIndices, toPath, fileName)
+            slide = sample.slides{toIndices(1)};
+            
+            newIndices = toIndices(2:length(toIndices));
+            toPath = makePath(toPath, sample.dirName);
+            fileName = [fileName, sample.generateFilenameSection];
+            
+            mask = slide.getFluoroMask(subsectionSession, newIndices, toPath, fileName);
+        end
         
         
-        
-        
-        
-        
-        
-    end%%
+    end
     
 end
 

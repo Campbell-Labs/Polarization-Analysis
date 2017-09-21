@@ -376,15 +376,15 @@ classdef ArtificialSubject < Subject
             filenameSection = subject.generateFilenameSection();
             dataFilename = [dataFilename, filenameSection];
             
-            prompt = ['Select the eye to which the data being imported from ', displayImportPath, ' belongs to.'];
-            title = 'Select Eye';
+            prompt = ['Select the sample to which the data being imported from ', displayImportPath, ' belongs to.'];
+            title = 'Select Sample';
             choices = subject.getSampleChoices();
             
             [choice, cancel, createNew] = selectEntryOrCreateNew(prompt, title, choices);
             
             if ~cancel
                 if createNew
-                      sampleType = SampleTypes.Eye;
+                      sampleType = SampleTypes.ArtificialSample;
                       
                       suggestedSampleNumber = subject.nextSampleNumber();
                       suggestedSubSampleNumber = subject.nextSubSampleNumber(sampleType);
@@ -410,9 +410,9 @@ classdef ArtificialSubject < Subject
                 end
                 
                 if ~isempty(sample)
-                    toEyeProjectPath = makePath(toSubjectProjectPath, sample.dirName);
+                    toSampleProjectPath = makePath(toSubjectProjectPath, sample.dirName);
                     
-                    sample = sample.importLegacyData(toEyeProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType);
+                    sample = sample.importLegacyData(toSampleProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType);
                     
                     subject = subject.updateSample(sample);
                 end
@@ -438,17 +438,17 @@ classdef ArtificialSubject < Subject
             end
         end
         
-        function subject = editSelectedQuarterMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
-            eye = subject.getSelectedSample();
+        function subject = editSelectedSlideMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
+            sample = subject.getSelectedSample();
             
-            if ~isempty(eye)
-                toEyePath = makePath(toSubjectPath, eye.dirName);
+            if ~isempty(sample)
+                toSamplePath = makePath(toSubjectPath, sample.dirName);
                 filenameSection = subject.generateFilenameSection();
                 dataFilename = [dataFilename, filenameSection];
                 
-                eye = eye.editSelectedQuarterMetadata(projectPath, toEyePath, userName, dataFilename);
+                sample = sample.editSelectedSlideMetadata(projectPath, toSamplePath, userName, dataFilename);
             
-                subject = subject.updateSelectedSample(eye);
+                subject = subject.updateSelectedSample(sample);
             end
         end
         
