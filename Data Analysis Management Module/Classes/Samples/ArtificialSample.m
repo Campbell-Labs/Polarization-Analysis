@@ -99,7 +99,7 @@ classdef ArtificialSample < Sample
                 oldDirName = sample.dirName;
                 oldFilenameSection = sample.generateFilenameSection();
                 
-                %Assigning values to Csf Sample Properties
+                %Assigning values to Artificial Sample Properties
                 sample.sampleId = sampleId;
                 sample.sampleNumber = sampleNumber;
                 sample.preppedBy = preppedBy;

@@ -120,6 +120,8 @@ classdef Sample
                 sampleType = SampleTypes.CsfSample;
             elseif isa(SampleTypes.BrainSection.sessionClass, classString)
                 sampleType = SampleTypes.BrainSection;
+            elseif isa(SampleTypes.ArtificialSample.sessionClass, classString)
+                sampleType = SampleTypes.ArtificialSample;
             else
                 error('Unknown Sample Type');
             end
