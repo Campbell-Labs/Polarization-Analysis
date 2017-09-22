@@ -169,8 +169,8 @@ classdef ArtificialSubject < Subject
             end
         end
         
-        function subject = updateEye(subject, eye)
-            eyes = subject.eyes;
+        function subject = updateSample(subject, sample)
+            samples = subject.samples;
             numEyes = length(eyes);
             updated = false;
             
