@@ -463,7 +463,21 @@ classdef NaturalSubject < Subject
             end
         end
         
-        function subject = editSelectedQuarterMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
+%         function subject = editSelectedQuarterMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
+%             eye = subject.getSelectedSample();
+%             
+%             if ~isempty(eye)
+%                 toEyePath = makePath(toSubjectPath, eye.dirName);
+%                 filenameSection = subject.generateFilenameSection();
+%                 dataFilename = [dataFilename, filenameSection];
+%                 
+%                 eye = eye.editSelectedQuarterMetadata(projectPath, toEyePath, userName, dataFilename);
+%             
+%                 subject = subject.updateSelectedSample(eye);
+%             end
+%         end
+        
+        function subject = editSelectedSubdivisionMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
             eye = subject.getSelectedSample();
             
             if ~isempty(eye)
@@ -471,7 +485,7 @@ classdef NaturalSubject < Subject
                 filenameSection = subject.generateFilenameSection();
                 dataFilename = [dataFilename, filenameSection];
                 
-                eye = eye.editSelectedQuarterMetadata(projectPath, toEyePath, userName, dataFilename);
+                eye = eye.editSelectedSubdivisionMetadata(projectPath, toEyePath, userName, dataFilename);
             
                 subject = subject.updateSelectedSample(eye);
             end

@@ -33,7 +33,7 @@ classdef Slide
     
     methods
         function slide = Slide(suggestedSlideNumber, existingSlideNumbers, toSamplePath, projectPath, importDir, userName, toFilename)
-            [cancel, slide] = slide.enterMetadata(suggestedSlideNumber, exisitingSlideNumbers, importDir, userName);
+            [cancel, slide] = slide.enterMetadata(suggestedSlideNumber, existingSlideNumbers, importDir, userName);
             
             if ~cancel
                 %set UUID

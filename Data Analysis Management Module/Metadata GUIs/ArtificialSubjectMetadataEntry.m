@@ -83,8 +83,10 @@ if isEdit
 
     handles.subjectNumber = subject.subjectNumber;
     handles.subjectId = subject.subjectId;    
-    handles.subjectSource = subject.preppedDate;   
+    handles.subjectSource = subject.subjectSource;   
     handles.notes = subject.notes;
+    
+    checkToEnableOkButton(handles);
 else
     set(handles.importPathTitle, 'String', handles.importPath);
     
@@ -92,7 +94,7 @@ else
     
     handles.subjectNumber = handles.suggestedSubjectNumber;
     handles.subjectId = defaultSubject.subjectId;    
-    handles.subjectSource = defaultSubject.preppedDate;   
+    handles.subjectSource = defaultSubject.subjectSource;   
     handles.notes = defaultSubject.notes;
 end
 
@@ -103,9 +105,6 @@ set(handles.subjectNumberInput, 'String', num2str(handles.subjectNumber));
 set(handles.subjectSourceInput, 'String', handles.subjectSource);
 set(handles.subjectNotesInput, 'String', handles.notes);
 
-justDate = false;
-
-setDateInput(handles.subjectSourceInput, handles.preppedDate, justDate);
 
 % Choose default command line output for ArtificialSubjectMetadataEntry
 handles.output = hObject;

@@ -368,7 +368,7 @@ function slideNotesInput_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of slideNotesInput as a double
 
 %Get value from input box
-handles.quarterNotes = strjoin(rot90(cellstr(get(hObject, 'String'))));
+handles.notes = strjoin(rot90(cellstr(get(hObject, 'String'))));
 
 checkToEnableOkButton(handles);
 

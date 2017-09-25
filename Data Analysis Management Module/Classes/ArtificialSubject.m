@@ -168,28 +168,28 @@ classdef ArtificialSubject < Subject
                 sampleChoices{i} = samples{i}.naviListboxLabel;
             end
         end
-        
-        function subject = updateSample(subject, sample)
-            samples = subject.samples;
-            numSamples = length(sample);
-            updated = false;
-            
-            for i=1:numSamples
-                if samples{i}.sampleNumber == sample.sampleNumber
-                    subject.samples{i} = sample;
-                    updated = true;
-                    break;
-                end
-            end
-            
-            if ~updated % add new sample
-                subject.samples{numSamples + 1} = sample;
-                
-                if subject.sampleIndex == 0
-                    subject.sampleIndex = 1;
-                end
-            end            
-        end
+%**NOT NEEDED***        
+%         function subject = updateSample(subject, sample)
+%             samples = subject.samples;
+%             numSamples = length(sample);
+%             updated = false;
+%             
+%             for i=1:numSamples
+%                 if samples{i}.sampleNumber == sample.sampleNumber
+%                     subject.samples{i} = sample;
+%                     updated = true;
+%                     break;
+%                 end
+%             end
+%             
+%             if ~updated % add new sample
+%                 subject.samples{numSamples + 1} = sample;
+%                 
+%                 if subject.sampleIndex == 0
+%                     subject.sampleIndex = 1;
+%                 end
+%             end            
+%         end
         
         
         function subject = updateSelectedLocation(subject, location)
@@ -432,13 +432,13 @@ classdef ArtificialSubject < Subject
                 filenameSection = subject.generateFilenameSection();
                 dataFilename = [dataFilename, filenameSection];
                 
-                sample = sample.editMetadata(projectPath, toSubjectPath, userName, dataFilename, existingSampleNumbers, existingSubSampleNumbers);
+                sample = sample.editMetadata(projectPath, toSubjectPath, userName, dataFilename, existingSampleNumbers);
             
                 subject = subject.updateSelectedSample(sample);
             end
         end
         
-        function subject = editSelectedSlideMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
+        function subject = editSelectedSubdivisionMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
             sample = subject.getSelectedSample();
             
             if ~isempty(sample)
@@ -446,7 +446,7 @@ classdef ArtificialSubject < Subject
                 filenameSection = subject.generateFilenameSection();
                 dataFilename = [dataFilename, filenameSection];
                 
-                sample = sample.editSelectedSlideMetadata(projectPath, toSamplePath, userName, dataFilename);
+                sample = sample.editSelectedSubdivisionMetadata(projectPath, toSamplePath, userName, dataFilename);
             
                 subject = subject.updateSelectedSample(sample);
             end

@@ -146,7 +146,7 @@ classdef ArtificialSample < Sample
             [objects, objectIndex] = loadObjects(sample, SlideNamingConventions.METADATA_FILENAME);
             
             sample.slides = objects;
-            sample.slideIndex = objectIndex;   
+            sample.slidesIndex = objectIndex;   
         end
         
         function sample = updateFileSelectionEntries(sample, toPath)
@@ -227,22 +227,22 @@ classdef ArtificialSample < Sample
             if ~updated
                 sample.slides{numSlides + 1} = slide;
                 
-                if sample.slideIndex == 0
-                    sample.slideIndex = 1;
+                if sample.slidesIndex == 0
+                    sample.slidesIndex = 1;
                 end
             end            
         end
         
-        function sample = updateSelectedQuarter(sample, slide)
-            sample.slides{sample.slideIndex} = slide;
+        function sample = updateSelectedSlide(sample, slide)
+            sample.slides{sample.slidesIndex} = slide;
         end
         
         function sample = updateSelectedLocation(sample, location)
-            slide = sample.slides{sample.slideIndex};
+            slide = sample.slides{sample.slidesIndex};
             
             slide = slide.updateSelectedLocation(location);
                         
-            sample.slides{sample.slideIndex} = slide;
+            sample.slides{sample.slidesIndex} = slide;
         end
         
         function slide = getSlideByNumber(sample, number)
@@ -294,8 +294,8 @@ classdef ArtificialSample < Sample
         function slide = getSelectedSlide(sample)
             slide = [];
             
-            if sample.slideIndex ~= 0
-                slide = sample.slides{sample.slideIndex};
+            if sample.slidesIndex ~= 0
+                slide = sample.slides{sample.slidesIndex};
             end
         end
         
@@ -311,7 +311,7 @@ classdef ArtificialSample < Sample
                     slideOptions{i} = sample.slides{i}.naviListboxLabel;
                 end
                 
-                set(handles.subSampleSelect, 'String', slideOptions, 'Value', sample.slideIndex, 'Enable', 'on');
+                set(handles.subSampleSelect, 'String', slideOptions, 'Value', sample.slidesIndex, 'Enable', 'on');
                 
                 handles = sample.getSelectedSlide().updateNavigationListboxes(handles);
             end
@@ -354,12 +354,14 @@ classdef ArtificialSample < Sample
                 incubationTimeString,...
                 incubationTemperatureString,...
                 notesString];
+            
+            metadataHistoryStrings = generateMetadataHistoryStrings(sample.metadataHistory);
             metadataString = [metadataString, metadataHistoryStrings];
             
         end
         
         function sample = updateSubSampleIndex(sample, index)
-            sample.slideIndex = index;
+            sample.slidesIndex = index;
         end
         
         function sample = updateLocationIndex(sample, index)
@@ -441,7 +443,21 @@ classdef ArtificialSample < Sample
             end
         end
         
-        function sample = editSelectedSlideMetadata(sample, projectPath, toSamplePath, userName, dataFilename)
+%         function sample = editSelectedSlideMetadata(sample, projectPath, toSamplePath, userName, dataFilename)
+%             slide = sample.getSelectedSlide();
+%             
+%             if ~isempty(slide)
+%                 existingSlideNumbers = sample.getSlideNumbers();
+%                 filenameSection = sample.generateFilenameSection();
+%                 dataFilename = [dataFilename, filenameSection];
+%                 
+%                 slide = slide.editMetadata(projectPath, toSamplePath, userName, dataFilename, existingSlideNumbers);
+%             
+%                 sample = sample.updateSelectedSlide(slide);
+%             end
+%         end
+        
+        function sample = editSelectedSubdivisionMetadata(sample, projectPath, toSamplePath, userName, dataFilename)
             slide = sample.getSelectedSlide();
             
             if ~isempty(slide)

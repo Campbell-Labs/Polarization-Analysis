@@ -74,7 +74,7 @@ isEdit = varargin{5};
 
 sample = [];
 
-if length(varargin) > 7
+if length(varargin) > 5
     sample = varargin{6};
 end
 

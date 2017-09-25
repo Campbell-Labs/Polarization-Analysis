@@ -261,6 +261,19 @@ classdef Subject
             end
         end   
         
+        function subject = createNewSlide(subject, projectPath, toPath, userName)
+            sample = subject.getSelectedSample();
+            
+            if ~isempty(sample)
+                toPath = makePath(toPath, subject.dirName);
+                
+                sample = sample.createNewSlide(projectPath, toPath, userName);
+                
+                subject = subject.updateSample(sample);
+            end
+        end
+        
+        
         function subject = createNewLocation(subject, projectPath, toPath, userName, subjectType)
             sample = subject.getSelectedSample();
             

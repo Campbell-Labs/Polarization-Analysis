@@ -542,14 +542,27 @@ classdef Trial
             end
         end
         
-        function trial = editSelectedQuarterMetadata(trial, projectPath, userName)
+%         function trial = editSelectedQuarterMetadata(trial, projectPath, userName)
+%             subject = trial.getSelectedSubject();
+%             
+%             if ~isempty(subject)
+%                 toSubjectPath = makePath(trial.dirName, subject.dirName);
+%                 dataFilename = trial.generateFilenameSection();
+%                 
+%                 subject = subject.editSelectedQuarterMetadata(projectPath, toSubjectPath, userName, dataFilename);
+%             
+%                 trial = trial.updateSelectedSubject(subject);
+%             end
+%         end
+        
+        function trial = editSelectedSubdivisionMetadata(trial, projectPath, userName)
             subject = trial.getSelectedSubject();
             
             if ~isempty(subject)
                 toSubjectPath = makePath(trial.dirName, subject.dirName);
                 dataFilename = trial.generateFilenameSection();
                 
-                subject = subject.editSelectedQuarterMetadata(projectPath, toSubjectPath, userName, dataFilename);
+                subject = subject.editSelectedSubdivisionMetadata(projectPath, toSubjectPath, userName, dataFilename);
             
                 trial = trial.updateSelectedSubject(subject);
             end
@@ -613,6 +626,18 @@ classdef Trial
                 toPath = trial.dirName;
                 
                 subject = subject.createNewQuarter(projectPath, toPath, userName);
+                
+                trial = trial.updateSubject(subject);
+            end
+        end
+        
+        function trial = createNewSlide(trial, projectPath, userName)
+            subject = trial.getSelectedSubject();
+            
+            if ~isempty(subject)
+                toPath = trial.dirName;
+                
+                subject = subject.createNewSlide(projectPath, toPath, userName);
                 
                 trial = trial.updateSubject(subject);
             end

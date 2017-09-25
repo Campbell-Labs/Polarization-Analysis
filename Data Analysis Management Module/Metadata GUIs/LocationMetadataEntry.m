@@ -93,8 +93,12 @@ handles.cancel = false;
 axes(handles.retinalmap);
 
 %Chooses right eye to map if selected eye is unknown
-if handles.eyeType == EyeTypes.Unknown
+if handles.eyeType == EyeTypes.Unknown 
     handles.eyeType = Constants.DEFAULT_EYE_TYPE;
+elseif isempty(handles.eyeType)
+    handles.eyeType = Constants.DEFAULT_EYE_TYPE;
+    handles.selectedQuarter = [];
+    handles.selectedQuarterDisplay = '';
 end
 
 %Subject type check
@@ -191,6 +195,8 @@ elseif handles.eyeType == EyeTypes.Left && handles.plotFovea == false
     buttonSwitch(handles);
     
     set(handles.MapTitle,'String','Left Eye without Fovea');
+else
+    set(handles.MapTitle, 'String', 'Location Map');
 end
 
 %Remove axes from retina diagram
