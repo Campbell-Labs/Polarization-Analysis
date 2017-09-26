@@ -126,7 +126,7 @@ classdef ArtificialSample < Sample
          end
         
         function dirName = generateDirName(sample)
-            dirSubtitle = ''; % No subtitle for Artificial sample
+            dirSubtitle = sample.sampleId; 
             
             dirName = createDirName(ArtificialSampleNamingConventions.DIR_PREFIX, sample.sampleNumber, dirSubtitle, ArtificialSampleNamingConventions.DIR_NUM_DIGITS);
         end
