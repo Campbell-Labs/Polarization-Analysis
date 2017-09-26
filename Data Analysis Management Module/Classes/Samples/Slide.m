@@ -133,7 +133,7 @@ classdef Slide
             toPath = makePath(toPath, slide.dirName);
             
             for i=1:length(locations)
-                slide.locations{i} = slide{i}.updateFileSelectionEntries(toPath);
+                slide.locations{i} = locations{i}.updateFileSelectionEntries(toPath);
             end
         end
         
