@@ -353,6 +353,7 @@ classdef Slide
             slideMaterialString = ['Slide Material: ', slide.slideMaterial];
             slideNumberString = ['Slide Number; ', num2str(slide.slideNumber)];
             aliquotDoneByString = ['Aliquot Done By: ', slide.aliquotDoneBy];
+            aliquotDateString = ['Aliquot Date: ', displayDateAndTime(slide.aliquotDate)];
             notesString = ['Notes: ', formatMultiLineTextForDisplay(slide.notes)];
             metadataHistoryStrings = generateMetadataHistoryStrings(slide.metadataHistory);
             
