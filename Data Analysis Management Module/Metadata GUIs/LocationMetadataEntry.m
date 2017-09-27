@@ -419,6 +419,11 @@ elseif handles.selectedQuarter == QuarterTypes.Unknown
         waitfor(warndlg(errorMessage, errorTitle));
         [handles.xCoords,handles.yCoords] = ginput(1);
     end
+else
+    while sqrt((handles.xCoords)^2 + (handles.yCoords)^2) > 1
+        waitfor(warndlg(errorMessage, errorTitle));
+        [handles.xCoords,handles.yCoords] = ginput(1);
+    end
 end
 
 %Plots a marker at the point selected
