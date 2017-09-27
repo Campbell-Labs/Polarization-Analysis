@@ -3,11 +3,7 @@ classdef ArtificialSubject < Subject
     % these are "subjects" that are grown from pure amyloid
     
     properties        
-        preppedDate
-        preppedBy
-        
-        incubationTime %hours (decimal please)
-        incubationTemperature %in degrees C (decimal please)        
+        subjectSource = '';      
     end
     
     methods
@@ -43,7 +39,7 @@ classdef ArtificialSubject < Subject
         function subject = editMetadata(subject, projectPath, toTrialPath, userName, dataFilename, existingSubjectNumbers)
             isEdit = true;
             
-            [cancel, subjectNumber, subjectId, preppedDate, preppedBy, incubationTime, incubationTemperature, notes] = ArtificialSubjectMetadataEntry([], existingSubjectNumbers, userName, '', isEdit, subject);
+            [cancel, subjectNumber, subjectId, subjectSource, notes] = ArtificialSubjectMetadataEntry([], existingSubjectNumbers, userName, '', isEdit, subject);
             
             if ~cancel
                 subject = updateMetadataHistory(subject, userName);
@@ -54,10 +50,7 @@ classdef ArtificialSubject < Subject
                 %Assigning values to ArtificialSubject Properties
                 subject.subjectNumber = subjectNumber;
                 subject.subjectId = subjectId;
-                subject.preppedDate = preppedDate;
-                subject.preppedBy = preppedBy;
-                subject.incubationTime = incubationTime;
-                subject.incubationTemperature = incubationTemperature;
+                subject.subjectSource = subjectSource;
                 subject.notes = notes;
                 
                 updateBackupFiles = updateBackupFilesQuestionGui();
@@ -175,28 +168,28 @@ classdef ArtificialSubject < Subject
                 sampleChoices{i} = samples{i}.naviListboxLabel;
             end
         end
-        
-        function subject = updateEye(subject, eye)
-            eyes = subject.eyes;
-            numEyes = length(eyes);
-            updated = false;
-            
-            for i=1:numEyes
-                if eyes{i}.eyeNumber == eye.eyeNumber
-                    subject.eyes{i} = eye;
-                    updated = true;
-                    break;
-                end
-            end
-            
-            if ~updated % add new eye
-                subject.eyes{numEyes + 1} = eye;
-                
-                if subject.eyeIndex == 0
-                    subject.eyeIndex = 1;
-                end
-            end            
-        end
+%**NOT NEEDED***        
+%         function subject = updateSample(subject, sample)
+%             samples = subject.samples;
+%             numSamples = length(sample);
+%             updated = false;
+%             
+%             for i=1:numSamples
+%                 if samples{i}.sampleNumber == sample.sampleNumber
+%                     subject.samples{i} = sample;
+%                     updated = true;
+%                     break;
+%                 end
+%             end
+%             
+%             if ~updated % add new sample
+%                 subject.samples{numSamples + 1} = sample;
+%                 
+%                 if subject.sampleIndex == 0
+%                     subject.sampleIndex = 1;
+%                 end
+%             end            
+%         end
         
         
         function subject = updateSelectedLocation(subject, location)
@@ -208,38 +201,38 @@ classdef ArtificialSubject < Subject
         end
         
                
-        function eye = getEyeByNumber(subject, number)
-            eyes = subject.eyes;
+        function sample = getSampleByNumber(subject, number)
+            samples = subject.samples;
             
-            eye = Eye.empty;
+            sample = ArtificialSample.empty;
             
-            for i=1:length(eyes)
-                if eyes{i}.eyeNumber == number
-                    eye = eyes{i};
+            for i=1:length(samples)
+                if samples{i}.sampleNumber == number
+                    sample = samples{i};
                     break;
                 end
             end
         end
         
-        function eyeNumbers = getEyeNumbers(subject)
-            eyes = subject.eyes;
-            numEyes = length(eyes);
+        function sampleNumbers = getSampleNumbers(subject)
+            samples = subject.samples;
+            numSamples = length(samples);
             
-            eyeNumbers = zeros(numEyes, 1); % want this to be an matrix, not cell array
+            sampleNumbers = zeros(numSamples, 1); % want this to be an matrix, not cell array
             
-            for i=1:numEyes
-                eyeNumbers(i) = eyes{i}.eyeNumber;                
+            for i=1:numSamples
+                sampleNumbers(i) = samples{i}.sampleNumber;                
             end
         end
         
-        function nextEyeNumber = nextEyeNumber(subject)
-            eyeNumbers = subject.getEyeNumbers();
+        function nextSampleNumber = nextSampleNumber(subject)
+            sampleNumbers = subject.getSampleNumbers();
             
-            if isempty(eyeNumbers)
-                nextEyeNumber = 1;
+            if isempty(sampleNumbers)
+                nextSampleNumber = 1;
             else
-                lastEyeNumber = max(eyeNumbers);
-                nextEyeNumber = lastEyeNumber + 1;
+                lastSampleNumber = max(sampleNumbers);
+                nextSampleNumber = lastSampleNumber + 1;
             end
         end
         
@@ -248,16 +241,13 @@ classdef ArtificialSubject < Subject
             isEdit = false;
             
             %Call to ArtificialSubjectMetadataEntry GUI
-            [cancel, subjectNumber, subjectId, preppedDate, preppedBy, incubationTime, incubationTemperature, notes] = ArtificialSubjectMetadataEntry(subjectNumber, existingSubjectNumbers, userName, importPath, isEdit);
+            [cancel, subjectNumber, subjectId, subjectSource, notes] = ArtificialSubjectMetadataEntry(subjectNumber, existingSubjectNumbers, userName, importPath, isEdit);
             
             if ~cancel
                 %Assigning values to ArtificialSubject Properties
                 subject.subjectNumber = subjectNumber;
                 subject.subjectId = subjectId;
-                subject.preppedDate = preppedDate;
-                subject.preppedBy = preppedBy;
-                subject.incubationTime = incubationTime;
-                subject.incubationTemperature = incubationTemperature;
+                subject.subjectSource = subjectSource;
                 subject.notes = notes;
             end
             
@@ -312,13 +302,10 @@ classdef ArtificialSubject < Subject
             
             [subjectIdString, subjectNumberString, subjectNotesString] = subject.getSubjectMetadataString();
             
-            preppedDateString = ['Preparation Date: ', displayDateAndTime(subject.preppedDate)];
-            preppedByString = ['Prepared By: ', subject.preppedBy];
-            incubationTimeString = ['Incubation Time: ', num2str(subject.incubationTime)];
-            incubationTemperatureString = ['Incubation Temperature: ', num2str(subject.incubationTemperature)];
+            subjectSourceString = ['Subject Source: ', subject.subjectSource];
             metadataHistoryStrings = generateMetadataHistoryStrings(subject.metadataHistory);
             
-            metadataString = [subjectIdString, subjectNumberString, preppedDateString, preppedByString, incubationTimeString, incubationTemperatureString, subjectNotesString];
+            metadataString = [subjectIdString, subjectNumberString, subjectSourceString, subjectNotesString];
             metadataString = [metadataString, metadataHistoryStrings];
             
         end
@@ -389,15 +376,15 @@ classdef ArtificialSubject < Subject
             filenameSection = subject.generateFilenameSection();
             dataFilename = [dataFilename, filenameSection];
             
-            prompt = ['Select the eye to which the data being imported from ', displayImportPath, ' belongs to.'];
-            title = 'Select Eye';
+            prompt = ['Select the sample to which the data being imported from ', displayImportPath, ' belongs to.'];
+            title = 'Select Sample';
             choices = subject.getSampleChoices();
             
             [choice, cancel, createNew] = selectEntryOrCreateNew(prompt, title, choices);
             
             if ~cancel
                 if createNew
-                      sampleType = SampleTypes.Eye;
+                      sampleType = SampleTypes.ArtificialSample;
                       
                       suggestedSampleNumber = subject.nextSampleNumber();
                       suggestedSubSampleNumber = subject.nextSubSampleNumber(sampleType);
@@ -423,9 +410,9 @@ classdef ArtificialSubject < Subject
                 end
                 
                 if ~isempty(sample)
-                    toEyeProjectPath = makePath(toSubjectProjectPath, sample.dirName);
+                    toSampleProjectPath = makePath(toSubjectProjectPath, sample.dirName);
                     
-                    sample = sample.importLegacyData(toEyeProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType);
+                    sample = sample.importLegacyData(toSampleProjectPath, legacyImportPaths, displayImportPath, localProjectPath, dataFilename, userName, subjectType);
                     
                     subject = subject.updateSample(sample);
                 end
@@ -445,23 +432,23 @@ classdef ArtificialSubject < Subject
                 filenameSection = subject.generateFilenameSection();
                 dataFilename = [dataFilename, filenameSection];
                 
-                sample = sample.editMetadata(projectPath, toSubjectPath, userName, dataFilename, existingSampleNumbers, existingSubSampleNumbers);
+                sample = sample.editMetadata(projectPath, toSubjectPath, userName, dataFilename, existingSampleNumbers);
             
                 subject = subject.updateSelectedSample(sample);
             end
         end
         
-        function subject = editSelectedQuarterMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
-            eye = subject.getSelectedSample();
+        function subject = editSelectedSubdivisionMetadata(subject, projectPath, toSubjectPath, userName, dataFilename)
+            sample = subject.getSelectedSample();
             
-            if ~isempty(eye)
-                toEyePath = makePath(toSubjectPath, eye.dirName);
+            if ~isempty(sample)
+                toSamplePath = makePath(toSubjectPath, sample.dirName);
                 filenameSection = subject.generateFilenameSection();
                 dataFilename = [dataFilename, filenameSection];
                 
-                eye = eye.editSelectedQuarterMetadata(projectPath, toEyePath, userName, dataFilename);
+                sample = sample.editSelectedSubdivisionMetadata(projectPath, toSamplePath, userName, dataFilename);
             
-                subject = subject.updateSelectedSample(eye);
+                subject = subject.updateSelectedSample(sample);
             end
         end
         
@@ -502,7 +489,7 @@ classdef ArtificialSubject < Subject
             for i=1:length(diagnoses)
                 diagnosis = diagnoses{i};
                 
-                if diagnosis.isADPositive(trial);
+                if diagnosis.isADPositive(trial)
                     bool = true;
                     break;
                 end
@@ -569,7 +556,7 @@ classdef ArtificialSubject < Subject
                     rowCounter = rowCounter + 1;
                     
                     % write data
-                    sampleRowIndex = rowIndex; %cache this, we need to place the eye and location data first
+                    sampleRowIndex = rowIndex; %cache this, we need to place the sample and location data first
                     
                     rowIndex = rowIndex + 1;
                     

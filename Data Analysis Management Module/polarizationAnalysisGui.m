@@ -22,7 +22,7 @@ function varargout = polarizationAnalysisGui(varargin)
 
 % Edit the above text to modify the response to help polarizationAnalysisGui
 
-% Last Modified by GUIDE v2.5 28-Jun-2017 16:35:29
+% Last Modified by GUIDE v2.5 25-Sep-2017 10:33:16
 
 % Begin initialization code - DO NOT EDIT
 
@@ -583,19 +583,19 @@ editProjectMetadata(hObject, eventdata, handles);
 
 
 % --------------------------------------------------------------------
-function quarterMenu_Callback(hObject, eventdata, handles)
-% hObject    handle to quarterMenu (see GCBO)
+function subDivisionMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to subDivisionMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 % --------------------------------------------------------------------
-function editQuarterMetadata_Callback(hObject, eventdata, handles)
-% hObject    handle to editQuarterMetadata (see GCBO)
+function editSubdivisionMetadata_Callback(hObject, eventdata, handles)
+% hObject    handle to editSubdivisionMetadata (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-editQuarterMetadata(hObject, eventdata, handles);
+editSubdivisionMetadata(hObject, eventdata, handles);
 
 
 % --------------------------------------------------------------------
@@ -638,7 +638,12 @@ function newCsfSample_Callback(hObject, eventdata, handles)
 
 newCsfSample(hObject, eventdata, handles);
 
-
+% --------------------------------------------------------------------
+function newArtificialSample_Callback(hObject, eventdata, handles)
+% hObject    handle to newArtificialSample (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newArtificialSample(hObject, eventdata, handles);
 % --------------------------------------------------------------------
 function newProject_Callback(hObject, eventdata, handles)
 % hObject    handle to newProject (see GCBO)
@@ -670,6 +675,13 @@ function newQuarter_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 newQuarter(hObject, eventdata, handles);
+
+% --------------------------------------------------------------------
+function newSlide_Callback(hObject, eventdata, handles)
+% hObject    handle to newSlide (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newSlide(hObject, eventdata, handles);
 
 % --------------------------------------------------------------------
 function newLocation_Callback(hObject, eventdata, handles)
@@ -804,4 +816,10 @@ else
     guidata(hObject,handles)
 %     disp('Autocontrast Off')
 end
+
+
+
+
+
+
 

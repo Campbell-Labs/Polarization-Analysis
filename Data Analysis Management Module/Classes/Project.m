@@ -380,11 +380,21 @@ classdef Project
             end
         end
         
-        function project = editSelectedQuarterMetadata(project, projectPath, userName)
+%         function project = editSelectedQuarterMetadata(project, projectPath, userName)
+%             trial = project.getSelectedTrial();
+%             
+%             if ~isempty(trial)
+%                 trial = trial.editSelectedQuarterMetadata(projectPath, userName);
+%                 
+%                 project = project.updateSelectedTrial(trial);
+%             end
+%         end
+        
+        function project = editSelectedSubdivisionMetadata(project, projectPath, userName)
             trial = project.getSelectedTrial();
             
             if ~isempty(trial)
-                trial = trial.editSelectedQuarterMetadata(projectPath, userName);
+                trial = trial.editSelectedSubdivisionMetadata(projectPath, userName);
                 
                 project = project.updateSelectedTrial(trial);
             end
@@ -452,6 +462,16 @@ classdef Project
             
             if ~isempty(trial)
                 trial = trial.createNewQuarter(projectPath, userName);
+                
+                project = project.updateTrial(trial);
+            end
+        end
+        
+        function project = createNewSlide(project, projectPath, userName)
+            trial = project.getSelectedTrial();
+            
+            if ~isempty(trial)
+                trial = trial.createNewSlide(projectPath, userName);
                 
                 project = project.updateTrial(trial);
             end

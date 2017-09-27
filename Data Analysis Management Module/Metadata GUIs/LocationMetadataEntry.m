@@ -87,14 +87,20 @@ locationCoordsWithLabels = varargin{6};
 
 handles.importPath = varargin{7}; %Input parameter is 'importPath'
 
+artCheck = false; %Check if it is an Artificial Subject
 
 handles.cancel = false;
 
 axes(handles.retinalmap);
 
 %Chooses right eye to map if selected eye is unknown
-if handles.eyeType == EyeTypes.Unknown
+if handles.eyeType == EyeTypes.Unknown 
     handles.eyeType = Constants.DEFAULT_EYE_TYPE;
+elseif isempty(handles.eyeType)
+    handles.eyeType = Constants.DEFAULT_EYE_TYPE;
+    handles.selectedQuarter = [];
+    handles.selectedQuarterDisplay = '';
+    artCheck = true;
 end
 
 %Subject type check
@@ -163,7 +169,7 @@ plot(x1, y2);
 
 %Checking whether or not the eye is right or left, and whether or not there
 %is a fovea
-if handles.eyeType == EyeTypes.Right && handles.plotFovea
+if handles.eyeType == EyeTypes.Right && handles.plotFovea && artCheck == false
 %Plot fovea for right eye
     foveaX = -0.2;
     foveaY = 0;
@@ -172,7 +178,7 @@ if handles.eyeType == EyeTypes.Right && handles.plotFovea
     circle(foveaX, foveaY, foveaRadius);
     
     set(handles.MapTitle,'String','Right Eye with Fovea');
-elseif handles.eyeType == EyeTypes.Left && handles.plotFovea
+elseif handles.eyeType == EyeTypes.Left && handles.plotFovea && artCheck == false
     %Plot fovea for left eye
     foveaX = 0.2;
     foveaY = 0;
@@ -184,13 +190,15 @@ elseif handles.eyeType == EyeTypes.Left && handles.plotFovea
     
     %Switching the location of the nasal and temporal quarters buttons
     buttonSwitch(handles);
-elseif handles.eyeType == EyeTypes.Right && handles.plotFovea == false
+elseif handles.eyeType == EyeTypes.Right && handles.plotFovea == false && artCheck == false
     set(handles.MapTitle,'String','Right Eye without Fovea');
-elseif handles.eyeType == EyeTypes.Left && handles.plotFovea == false
+elseif handles.eyeType == EyeTypes.Left && handles.plotFovea == false && artCheck == false
     %Switching the location of the nasal and temporal quarters
     buttonSwitch(handles);
     
     set(handles.MapTitle,'String','Left Eye without Fovea');
+else
+    set(handles.MapTitle, 'String', 'Location Map');
 end
 
 %Remove axes from retina diagram
@@ -407,6 +415,11 @@ elseif handles.selectedQuarter == QuarterTypes.Nasal
          end
     end
 elseif handles.selectedQuarter == QuarterTypes.Unknown
+    while sqrt((handles.xCoords)^2 + (handles.yCoords)^2) > 1
+        waitfor(warndlg(errorMessage, errorTitle));
+        [handles.xCoords,handles.yCoords] = ginput(1);
+    end
+else
     while sqrt((handles.xCoords)^2 + (handles.yCoords)^2) > 1
         waitfor(warndlg(errorMessage, errorTitle));
         [handles.xCoords,handles.yCoords] = ginput(1);

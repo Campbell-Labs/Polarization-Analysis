@@ -501,7 +501,7 @@ classdef Eye < FixedSample
             end
         end
         
-        function eye = editSelectedQuarterMetadata(eye, projectPath, toEyePath, userName, dataFilename)
+        function eye = editSelectedSubdivisionMetadata(eye, projectPath, toEyePath, userName, dataFilename)
             quarter = eye.getSelectedQuarter();
             
             if ~isempty(quarter)

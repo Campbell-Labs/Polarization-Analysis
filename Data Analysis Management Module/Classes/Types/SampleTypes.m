@@ -8,9 +8,10 @@ classdef SampleTypes
     
     enumeration
         % Tissue Sample
-        Eye             ('Eye',             Eye.empty)
-        CsfSample       ('CSF Sample',      CsfSample.empty)
-        BrainSection    ('Brain Section',   BrainSection.empty)
+        Eye              ('Eye',             Eye.empty)
+        CsfSample        ('CSF Sample',      CsfSample.empty)
+        BrainSection     ('Brain Section',   BrainSection.empty)
+        ArtificialSample ('Artificial Sample', ArtificialSample.empty)
         
     end
     
